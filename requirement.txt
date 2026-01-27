@@ -1,0 +1,10 @@
+
+streamlit     
+
+landingai     
+Pillow          
+google-generativeai
+langchain   
+pymupdf
+pandas          # Essential for organizing the extracted data into tables
+python-dotenv   # CRITICAL: For managing API keys securely (never hardcode them!)
