@@ -51,6 +51,7 @@ def extract_data(markdown_text: str) -> dict:
         "properties": {
             "merchant_name": {"type": "string"},
             "date": {"type": "string", "description": "YYYY-MM-DD format"},
+            "time": {"type": "string", "description": "HH:MM"},
             "total_amount": {"type": "number"},
             "currency": {"type": "string"},
             "items": {
@@ -80,6 +81,7 @@ def map_to_object(data: dict) -> Receipt:
     receipt = Receipt(
         merchant_name=data.get("merchant_name", "Unknown"),
         date=data.get("date"),
+        time=data.get("time"),
         total_amount=float(data.get("total_amount", 0.0)),
         currency=data.get("currency", "USD"),
         items=[]
