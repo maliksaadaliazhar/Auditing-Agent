@@ -34,7 +34,7 @@ class Auditor:
         prompt = f"List of items in receipt :\n{items_list}"
         
         response = self.client.models.generate_content(
-            model="gemini-3-flash-preview", 
+            model="gemini-2.5-flash", 
             config=types.GenerateContentConfig(
                 system_instruction="You are a strict corporate auditor. Your role is to identify" \
                 "if a receipt contains a tobacco or alcohol or any other drug product",
