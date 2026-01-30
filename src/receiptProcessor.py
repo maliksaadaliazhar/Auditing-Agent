@@ -42,7 +42,7 @@ def parse_image(image_path: str) -> str:
          split="page",
          model="dpt-2-latest"
     )
-    return parse_result[0].markdown
+    return parse_result.markdown
 
 def extract_data(markdown_text: str) -> dict:
     
