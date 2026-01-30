@@ -17,7 +17,7 @@ from landingai_ade.types import ParseResponse, ExtractResponse
 
 
 # Load envrironment variables from dotenv
-_ = load_dotenv(override=True)
+load_dotenv()
 
 
 # Initialize the client
