@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from src.receiptProcessor import process_receipt
 from src.auditor import Auditor
 
@@ -14,7 +15,18 @@ def main():
         receipt = process_receipt("temp.jpg")
 
         auditor.audit_receipt(receipt)
-        st.write(f"Merchant: {receipt.merchant_name}")
+
+        # =========== Creating dataframe of results =============
+        data = {
+            "Merchant": [receipt.merchant_name],
+            "Date": [receipt.date],
+            "Total Amount": [receipt.total_amount]
+        }
+
+        df = pd.DataFrame(data)
+        if st.button("Show Data"):
+            st.write(df.head(1))
+
         if receipt.flagged:
             st.error(f"Fraud Detected : {receipt.flag_reason}")
         else:
