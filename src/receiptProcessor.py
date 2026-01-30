@@ -59,9 +59,9 @@ def extract_data(markdown_text: str) -> dict:
                 "items": {
                     "type": "object",
                     "properties": {
-                        "description": {"type": "string"},
-                        "amount": {"type": "number"},
-                        "category": {"type": "string"}
+                        "description": {"type": "string", "description": "name of individual item on line"},
+                        "amount": {"type": "number", "description": "The cost of an individual item"},
+                        "category": {"type": "string", "description": "food, alcohol, travel, other"}
                     },
                     "required": ["description", "amount"]
                 }
