@@ -42,7 +42,7 @@ class Auditor:
             contents=prompt
         )
 
-        if not response['is_compiant']:
+        if not response['is_compliant']:
             receipt.flagged = True
             receipt.flag_reason.append(response['violation_reason'])
 
