@@ -159,7 +159,7 @@ def process_receipt(image_path: str) -> Receipt:
          split="page",
          model="dpt-2-latest"
     )
-    first_page = parse_result_list[0]
+    first_page = parse_result_list
 
     # 2. Extract (Get the Clean Data)
     extraction_result = client.extract(
