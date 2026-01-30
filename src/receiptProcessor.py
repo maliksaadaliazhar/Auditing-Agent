@@ -12,8 +12,8 @@ from landingai_ade.types import ParseResponse, ExtractResponse
 
 
 # Importing helper functions
-from helper import print_document, draw_bounding_boxes, draw_bounding_boxes_2
-from helper import create_cropped_chunk_images
+# from helper import print_document, draw_bounding_boxes, draw_bounding_boxes_2
+# from helper import create_cropped_chunk_images
 
 
 # Load envrironment variables from dotenv
