@@ -1,5 +1,5 @@
 import streamlit as st
-from receiptProcessor import process_receipt
+from src.receiptProcessor import process_receipt
 from src.auditor import Auditor
 
 def main():
@@ -11,7 +11,7 @@ def main():
         with open("temp.jpg", "wb") as f:
             f.write(uploaded_file.getbuffer())
 
-        receipt = process_receipt(uploaded_file)
+        receipt = process_receipt("temp.jpg")
 
         auditor.audit_receipt(receipt)
         st.write(f"Merchant: {receipt.merchant_name}")
