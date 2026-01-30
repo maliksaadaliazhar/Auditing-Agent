@@ -1,6 +1,5 @@
 import os
 import json
-import pymupdf
 from pathlib import Path
 from dotenv import load_dotenv
 from src.receipt import Receipt, LineItem
@@ -25,28 +24,27 @@ _ = load_dotenv(override=True)
 client = LandingAIADE()
 
 # this method will handle the overall processing of the receipt and will return the receipt object
-def process_receipt(self, image_path: str) -> Receipt:
+def process_receipt(image_path: str) -> Receipt:
         
-        # Step A: Parse (Image -> Markdown)
         markdown = parse_image(image_path)
         
-        # Step B: Extract (Markdown -> JSON)
         raw_json = extract_data(markdown)
         
-        # Step C: Map (JSON -> Receipt Object)
         receipt = map_to_object(raw_json)
         
         return receipt
 
-def parse_image(self, image_path: str) -> str:
+def parse_image(image_path: str) -> str:
 
-    with open(image_path, "rb") as f:
-        image_bytes = f.read()
-        
-    parse_result = self.client.parse(image_bytes)
+    document = Path(image_path)
+    parse_result : ParseResponse = client.parse(
+         document=document,
+         split="page",
+         model="dpt-2-latest"
+    )
     return parse_result[0].markdown
 
-def extract_data(self, markdown_text: str) -> dict:
+def extract_data(markdown_text: str) -> dict:
     
     receipt_schema = {
         "type": "object",
@@ -71,13 +69,13 @@ def extract_data(self, markdown_text: str) -> dict:
         "required": ["merchant_name", "total_amount", "date"]
     }
 
-    extraction_result = self.client.extract(
+    extraction_result : ExtractResponse = client.extract(
         markdown=markdown_text,
         schema=json.dumps(receipt_schema)
     )
     return extraction_result.extraction
 
-def map_to_object(self, data: dict) -> Receipt:
+def map_to_object(data: dict) -> Receipt:
     
     receipt = Receipt(
         merchant_name=data.get("merchant_name", "Unknown"),
@@ -98,8 +96,3 @@ def map_to_object(self, data: dict) -> Receipt:
     
     return receipt
 
-# this will contain these two methods 
-# - parse_document --- that will call parse api of ade
-# - extract_document --- that will call extract api of ade
-# - a schema will be defined
-# - other functionalities will be considered later

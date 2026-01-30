@@ -1,6 +1,5 @@
 import datetime
 
-
 class Auditor:
     def __init__(self):
         self.alcohol_keywords = ['wine', 'beer', 'alcohol', 'vodka', 'merlot']
@@ -8,7 +7,6 @@ class Auditor:
     def audit_receipt(self, receipt):
         self.check_weekend(receipt)
         self.check_alcohol(receipt)
-
 
     def check_weekend(self, receipt):
         # it date is empty, it will be flagged…
