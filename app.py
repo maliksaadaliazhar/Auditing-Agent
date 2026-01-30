@@ -20,13 +20,13 @@ def main():
         data = {
             "Merchant": [receipt.merchant_name],
             "Date": [receipt.date],
-            "Total Amount": [receipt.total_amount]
+            "Total Amount (USD)": [receipt.total_amount]
         }
 
         df = pd.DataFrame(data)
-        if st.button("Show Data"):
-            st.write(df.head(1))
+        st.write(df.head(1))
 
+        # ====== checking if receipt violated any rule ===========
         if receipt.flagged:
             st.error(f"Fraud Detected : {receipt.flag_reason}")
         else:

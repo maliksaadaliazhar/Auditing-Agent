@@ -1,7 +1,7 @@
 streamlit     
 landingai-ade  
 Pillow          
-google-generativeai
+google-genai
 langchain   
 pymupdf
 pandas          
