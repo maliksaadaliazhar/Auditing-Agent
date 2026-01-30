@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class AuditResult(BaseModel):
-    is_compiant : bool
+    is_compliant : bool
     violation_reason : str
 
 
@@ -33,7 +33,7 @@ class Auditor:
         prompt = f"List of items in receipt :\n{items_list}"
         
         response = self.client.models.generate_content(
-            model="gemini-3-flash-preview", 
+            model="gemini-2.5-pro", 
             config=types.GenerateContentConfig(
                 system_instruction="You are a strict corporate auditor. Your role is to identify" \
                 "if a receipt contains a tobacco or alcohol or any other drug product",
@@ -41,10 +41,9 @@ class Auditor:
                 response_schema=AuditResult),
             contents=prompt
         )
+        result = response.parsed
 
-        if not response['is_compliant']:
+        if not response.is_compliant:
             receipt.flagged = True
-            receipt.flag_reason.append(response['violation_reason'])
+            receipt.flag_reason.append(result.violation_reason)
 
-# it will have a class auditor which will take the receipt object as input and manipulate it
-# it will be main brain of the logic that handles logic and all that stuff…
