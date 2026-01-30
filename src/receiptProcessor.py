@@ -23,30 +23,7 @@ load_dotenv()
 # Initialize the client
 client = LandingAIADE()
 
-# this method will handle the overall processing of the receipt and will return the receipt object
-def process_receipt(image_path: str) -> Receipt:
-        
-        markdown = parse_image(image_path)
-        
-        raw_json = extract_data(markdown)
-        
-        receipt = map_to_object(raw_json)
-        
-        return receipt
-
-def parse_image(image_path: str) -> str:
-
-    document = Path(image_path)
-    parse_result : ParseResponse = client.parse(
-         document=document,
-         split="page",
-         model="dpt-2-latest"
-    )
-    return parse_result.markdown
-
-def extract_data(markdown_text: str) -> dict:
-    
-    receipt_schema = {
+receipt_schema = {
         "type": "object",
         "properties": {
             "merchant_name": {"type": "string"},
@@ -70,13 +47,37 @@ def extract_data(markdown_text: str) -> dict:
         "required": ["merchant_name", "total_amount", "date"]
     }
 
+# this method will handle the overall processing of the receipt and will return the receipt object
+def process_receipt(image_path: str) -> Receipt:
+
+    document = Path(image_path)
+    parse_result : ParseResponse = client.parse(
+         document=document,
+         split="page",
+         model="dpt-2-latest"
+    )
+
     extraction_result : ExtractResponse = client.extract(
-        markdown=markdown_text,
+        markdown=parse_result.markdown,
         schema=json.dumps(receipt_schema)
     )
-    return extraction_result.extraction
+    raw_json = extraction_result.extraction
+    metadata = extraction_result.extraction_metadata
 
-def map_to_object(data: dict) -> Receipt:
+    chunk_map = create_chunk_map(parse_result)
+    receipt = map_to_object(raw_json, metadata, chunk_map)
+
+    
+    return receipt
+
+def create_chunk_map(parse_result: ParseResponse):
+    chunk_map = {}
+    for chunk in parse_result.chunks:
+        chunk_map[chunk.id] = chunk.bbox_rect
+
+    return chunk_map 
+
+def map_to_object(data: dict, metadata: dict, chunk_map: dict) -> Receipt:
     
     receipt = Receipt(
         merchant_name=data.get("merchant_name", "Unknown"),
@@ -87,13 +88,24 @@ def map_to_object(data: dict) -> Receipt:
         items=[]
     )
 
-    if "items" in data:
-        for item in data["items"]:
+    if "items" in data and "items" in metadata:
+        for i, item in enumerate(data["items"]):
             new_item = LineItem(
                 description=item.get("description", "Unknown"),
                 amount=float(item.get("amount", 0.0)),
                 category=item.get("category", "Unknown")
             )
+
+            try:
+                item_meta = metadata["items"][i]
+                if "description" in item_meta and item_meta["description"]["references"]:
+                    ref_id = item_meta["description"]["references"][0]
+
+                    if ref_id in chunk_map:
+                        new_item.bbox = chunk_map[ref_id]
+            except(KeyError, IndexError):
+                pass
+            
             receipt.items.append(new_item)
     
     return receipt

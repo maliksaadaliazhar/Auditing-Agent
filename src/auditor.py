@@ -2,12 +2,13 @@ import datetime
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
+from typing import List
 
 
 class AuditResult(BaseModel):
     is_compliant : bool
     violation_reason : str
-
+    violating_item_names: List[str]
 
 class Auditor:
     def __init__(self):
@@ -47,3 +48,7 @@ class Auditor:
             receipt.flagged = True
             receipt.flag_reason.append(result.violation_reason)
 
+            for bad_name in result.violating_item_names:
+                for item in receipt.items:
+                    if bad_name.lower() in item.description.lower():
+                        item.flagged = True

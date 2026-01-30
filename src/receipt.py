@@ -8,6 +8,8 @@ class LineItem:
     description: str
     amount: float
     category: str = "Unknown"  # e.g., "Food", "Alcohol", "Tax"
+    flagged: bool = False
+    bbox: Optional[List[int]] = None
 
 @dataclass
 class Receipt:
@@ -31,3 +33,9 @@ class Receipt:
             return datetime.strptime(f"{self.date} {self.time}", "%Y-%m-%d %H:%M")
         except ValueError:
             return None
+        
+    @property
+    def flagged_boxes(self) -> list[list[int]]:
+        return [item.bbox for item in self.items if item.flagged and item.bbox]
+    
+    
