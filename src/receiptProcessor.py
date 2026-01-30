@@ -73,7 +73,9 @@ def process_receipt(image_path: str) -> Receipt:
 def create_chunk_map(parse_result: ParseResponse):
     chunk_map = {}
     for chunk in parse_result.chunks:
-        chunk_map[chunk.id] = chunk.bbox_rect
+        if chunk.grounding and chunk.grounding.box:
+            box = chunk.grounding.box
+            chunk_map[chunk.id] = [box.left, box.top, box.right, box.bottom]
 
     return chunk_map 
 
@@ -105,7 +107,7 @@ def map_to_object(data: dict, metadata: dict, chunk_map: dict) -> Receipt:
                         new_item.bbox = chunk_map[ref_id]
             except(KeyError, IndexError):
                 pass
-            
+
             receipt.items.append(new_item)
     
     return receipt
