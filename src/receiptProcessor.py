@@ -73,7 +73,7 @@ def process_receipt(image_path: str) -> Receipt:
 def create_chunk_map(parse_result: ParseResponse):
     chunk_map = {}
     for chunk in parse_result.chunks:
-        if chunk.grounding and chunk.grounding.box:
+        if chunk.grounding.box:
             box = chunk.grounding.box
             chunk_map[chunk.id] = [box.left, box.top, box.right, box.bottom]
 
