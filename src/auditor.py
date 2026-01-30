@@ -43,7 +43,7 @@ class Auditor:
         )
         result = response.parsed
 
-        if not response.is_compliant:
+        if result and not result.is_compliant:
             receipt.flagged = True
             receipt.flag_reason.append(result.violation_reason)
 
