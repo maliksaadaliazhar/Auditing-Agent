@@ -15,5 +15,5 @@ def draw_bounding_boxes(image_path: str, boxes: list) -> Image:
     ]
         draw.rectangle(absolute_box, outline="red", width=5)
     
-    return
+    return image
 
