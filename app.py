@@ -43,7 +43,7 @@ def main():
                 st.image(annotated_image, caption="Evidence of Violation", use_container_width=True)
         else:
             st.success("Receipt Approved")
-            st.image("temp.jpg", caption="Receipt Image", use_container_width=True)
+            st.image(temp_filename, caption="Receipt Image", use_container_width=True)
 
         st.write(df.head(1))
 
